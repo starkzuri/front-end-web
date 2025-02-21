@@ -1,68 +1,70 @@
 import React, { useRef, useState } from "react";
-import styles from "./PostCard.module.css";
-import searchLogo from "../../assets/ST4.png";
+import styles from "./PostCard.module.css";  // Import CSS module
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-import "react-loading-skeleton/dist/skeleton.css";
 import { BeatLoader } from "react-spinners";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faSearch,
   faImage,
   faVideo,
   faChartBar,
   faGlobe,
   faBucket,
   faSmile,
+  faXmark
 } from "@fortawesome/free-solid-svg-icons";
-import axios from "axios";
 import { useAppContext } from "../../providers/AppProvider";
 import { uploadToIPFS } from "../../Infura";
 import { multilineToSingleline } from "../../utils/AppUtils";
 
-const PostCard = ({ buttonText, onClick }) => {
+const PostCard = () => {
   const fileInputRef = useRef(null);
-  const [selectedFiles, setSelectedFiles] = useState([]);
+  const postContent = useRef();
+  const [fileURLs, setFileURLs] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const { contract, address, handleWalletConnection } = useAppContext();
-  const [postmedia, setPostmedia] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  // two states to store the files and the urls
-  const [fileURLs, setFileURLs] = useState([]);
-  const [imagesValue, setImagesValue] = useState([]);
-
-  const postContent = useRef();
 
   const handleFileClick = () => {
     fileInputRef.current.click();
   };
 
+  const handleRemoveFile = (indexToRemove) => {
+    setFileURLs(fileURLs.filter((_, index) => index !== indexToRemove));
+  };
+
   const handleSubmitForm = () => {
+    if (!postContent.current.value.trim()) {
+      toast.warning("Please enter some content to post", {
+        className: styles.modern_toast,
+      });
+      return;
+    }
+
     if (contract && address) {
       const _postContent = postContent.current.value;
       const _formattedContent = multilineToSingleline(_postContent);
-      const _postmedia = postmedia.join(" ");
-      console.log(_postmedia);
-      console.log(_postContent);
-
-      const myCall = contract.populate("create_post", [
-        _formattedContent,
-        fileURLs.join(" "),
-      ]);
+      
       setLoading(true);
-      // console.log(contract);
-      contract["create_post"](myCall.calldata)
-        .then((res) => {
-          console.info("successful response", res);
-          toast.success("content posted successfully!", {
-            className: styles.toast_message,
+      
+      contract["create_post"](
+        contract.populate("create_post", [
+          _formattedContent,
+          fileURLs.join(" "),
+        ]).calldata
+      )
+        .then(() => {
+          toast.success("Content posted successfully!", {
+            className: styles.modern_toast,
           });
           postContent.current.value = "";
+          setFileURLs([]);
         })
         .catch((err) => {
           console.error("Error: ", err);
+          toast.error("Failed to post content", {
+            className: styles.modern_toast,
+          });
         })
         .finally(() => {
           setLoading(false);
@@ -72,149 +74,132 @@ const PostCard = ({ buttonText, onClick }) => {
     }
   };
 
-  const handleFileChange = (event) => {
-    setSelectedFiles(event.target.files);
-    handleUpload();
-  };
-
-  const OnChangeMFile = async (e) => {
-    // Placeholder logic: Upload files to IPFS
-    const uploadedUrls = [];
+  const handleFileUpload = async (e) => {
     const selectedFiles = e.target.files;
+    if (!selectedFiles.length) return;
+    
     setLoading(true);
-
-    for (const file of selectedFiles) {
-      const response = await uploadToIPFS(file); // Your actual IPFS upload function
-      uploadedUrls.push(response);
-    }
-
-    // Placeholder logic: Handle changes, such as updating URLs
-    console.log("Uploaded URLs:", uploadedUrls);
-    setFileURLs(uploadedUrls);
-    if (uploadedUrls) {
-      setLoading(false);
-    } // Assuming you have a state to store the URLs
-  };
-
-  const handleUpload = async () => {
-    const formData = new FormData();
-    const images = fileInputRef.current.files;
-    // console.log(images);
-
-    // append each selected file to the form data object
-    for (let i = 0; i < images.length; i++) {
-      formData.append("files", images[i]);
-    }
-
-    // Log the contents of formData
-    for (let pair of formData.entries()) {
-      console.log(pair[0] + ": " + pair[1].name); // Logs the field name and file name
-    }
-    // console.log(formData);
-
+    const uploadedUrls = [];
+    
     try {
-      // const response = await axios.post(
-      //   "http://localhost:3001/upload-multiple",
-      //   formData,
-      //   {
-      //     headers: {
-      //       "Content-Type": "multipart/form-data",
-      //     },
-      //     // track upload progress
-      //     onUploadProgress: (progressEvent) => {
-      //       const progress = Math.round(
-      //         (progressEvent.loaded * 100) / progressEvent.total
-      //       );
-      //       setUploadProgress(progress);
-      //     },
-      //   }
-      // );
-      // console.log("upload successful", response.data);
-      // const urls = response.data;
-      // console.log(response.data.urls);
-      // setPostmedia(response.data.urls);
-      // setSelectedFiles([]);
+      let totalProgress = 0;
+      
+      for (let i = 0; i < selectedFiles.length; i++) {
+        const file = selectedFiles[i];
+        const response = await uploadToIPFS(file);
+        uploadedUrls.push(response);
+        
+        // Update progress
+        totalProgress = Math.round(((i + 1) / selectedFiles.length) * 100);
+        setUploadProgress(totalProgress);
+      }
+      
+      setFileURLs([...fileURLs, ...uploadedUrls]);
+      toast.success(`${uploadedUrls.length} file(s) uploaded successfully`, {
+        className: styles.modern_toast,
+      });
     } catch (error) {
-      console.error("Error uploading images: ", error);
+      console.error("Error uploading files:", error);
+      toast.error("Failed to upload files", {
+        className: styles.modern_toast,
+      });
+    } finally {
+      setLoading(false);
+      setUploadProgress(0);
     }
   };
-  return (
-    <div className={styles.postcard_border}>
-      <ToastContainer />
-      <div className={styles.form_container}>
-        <img src={searchLogo} className={styles.logo_image} alt="image" />
-        <textarea
-          className="w3-input"
-          ref={postContent}
-          placeholder="what's on your mind"
-        ></textarea>
 
-        {loading ? (
-          <button className="w3-button">
-            <BeatLoader loading={loading} color="#fff" size={10} />
-          </button>
-        ) : (
-          <button className="w3-button" onClick={handleSubmitForm}>
-            Post
-          </button>
-        )}
+  return (
+    <div className={styles.postCard}>
+      <ToastContainer position="top-right" autoClose={3000} />
+      
+      <div className={styles.postHeader}>
+        <div className={styles.userAvatar}>
+          <img src="/ST4.png" alt="User" />
+        </div>
+        <div className={styles.postInputContainer}>
+          <textarea
+            ref={postContent}
+            placeholder="What's on your mind?"
+            className={styles.postTextarea}
+          />
+        </div>
       </div>
-      <br />
-      <div className={styles.form_helpers_holder}>
-        <div
-          className={styles.form_helpers}
-          style={{ backgroundColor: "transparent" }}
-        >
-          {/* <FontAwesomeIcon icon={faSearch} /> */}
+      
+      {uploadProgress > 0 && (
+        <div className={styles.uploadProgress}>
+          <div 
+            className={styles.progressBar} 
+            style={{ width: `${uploadProgress}%` }}
+          >
+            <span className={styles.progressText}>{uploadProgress}%</span>
+          </div>
         </div>
-        <input
-          type="file"
-          id="fileInput"
-          ref={fileInputRef}
-          onChange={OnChangeMFile}
-          accept="image/*"
-          multiple
-          style={{ display: "none" }}
-        />
-        <div className={styles.form_helpers} onClick={handleFileClick}>
-          <FontAwesomeIcon icon={faVideo} />
+      )}
+      
+      {fileURLs.length > 0 && (
+        <div className={styles.filePreview}>
+          {fileURLs.map((file, index) => (
+            <div key={index} className={styles.fileTag}>
+              <span className={styles.fileName}>
+                {file.substring(0, 5)}...{file.substring(file.length - 5)}
+              </span>
+              <button 
+                className={styles.removeFile} 
+                onClick={() => handleRemoveFile(index)}
+              >
+                <FontAwesomeIcon icon={faXmark} />
+              </button>
+            </div>
+          ))}
         </div>
-        <div className={styles.form_helpers} onClick={handleFileClick}>
-          <FontAwesomeIcon icon={faSmile} />
-        </div>
-        <div className={styles.form_helpers} onClick={handleFileClick}>
-          <FontAwesomeIcon icon={faImage} />
+      )}
+      
+      <div className={styles.cardActions}>
+        <div className={styles.actionButtons}>
+          <button className={styles.actionBtn} onClick={handleFileClick}>
+            <FontAwesomeIcon icon={faImage} />
+            <span>Photo</span>
+          </button>
+          <button className={styles.actionBtn} onClick={handleFileClick}>
+            <FontAwesomeIcon icon={faVideo} />
+            <span>Video</span>
+          </button>
+          <button className={styles.actionBtn}>
+            <FontAwesomeIcon icon={faSmile} />
+            <span>Feeling</span>
+          </button>
+          <button className={styles.actionBtn}>
+            <FontAwesomeIcon icon={faChartBar} />
+            <span>Poll</span>
+          </button>
+          <button className={styles.actionBtn}>
+            <FontAwesomeIcon icon={faGlobe} />
+            <span>Location</span>
+          </button>
         </div>
         
-        {uploadProgress > 0 && <span>upload progress: {uploadProgress}%</span>}
-
-        <div className={styles.form_helpers} onClick={handleFileClick}>
-          <FontAwesomeIcon icon={faVideo} />
-        </div>
-        <div className={styles.form_helpers}>
-          <FontAwesomeIcon icon={faChartBar} />
-        </div>
-        <div className={styles.form_helpers}>
-          <FontAwesomeIcon icon={faGlobe} />
-        </div>{" "}
-        <div className={styles.form_helpers}>
-          <FontAwesomeIcon icon={faBucket} />
-        </div>
+        <button 
+          className={`${styles.postButton} ${loading ? styles.loading : ''}`}
+          onClick={handleSubmitForm}
+          disabled={loading}
+        >
+          {loading ? (
+            <BeatLoader loading={loading} color="#fff" size={8} />
+          ) : (
+            "Post Now"
+          )}
+        </button>
       </div>
-      <div>
-        {fileURLs &&
-          fileURLs.map((file, index) => {
-            return (
-              <span
-                key={index}
-                className={`${styles.image_aligned} w3-tag w3-round w3-blue`}
-              >
-                {file.substring(0, 5)}...{file.substring(file.length - 5)}{" "}
-                &times;
-              </span>
-            );
-          })}
-      </div>
+      
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileUpload}
+        accept="image/*,video/*"
+        multiple
+        style={{ display: "none" }}
+      />
     </div>
   );
 };
