@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faNavicon } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faNavicon, faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
 import { connect, disconnect } from "starknetkit";
 import styles from "./TopNav.module.css";
 import Logo from "../../assets/logo.png";
@@ -9,6 +9,37 @@ import ConfirmModal from "../confirmModal/ConfirmModal";
 
 const TopNav = ({ onMobileMenuClick }) => {
   const [confirm, setConfirm] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true); // Default to dark mode
+
+  // Load theme preference from localStorage on initial render
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "light") {
+      setIsDarkMode(false);
+      document.body.classList.add("light-theme");
+    } else {
+      document.body.classList.add("dark-theme");
+    }
+  }, []);
+
+  // Toggle between dark and light themes
+  const toggleTheme = () => {
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+
+    // Update the body class
+    if (newTheme) {
+      document.body.classList.remove("light-theme");
+      document.body.classList.add("dark-theme");
+    } else {
+      document.body.classList.remove("dark-theme");
+      document.body.classList.add("light-theme");
+    }
+
+    // Save the theme preference to localStorage
+    localStorage.setItem("theme", newTheme ? "dark" : "light");
+  };
+
   const cancelLogout = () => {
     setConfirm(false);
   };
@@ -21,7 +52,7 @@ const TopNav = ({ onMobileMenuClick }) => {
   const showConfirm = () => {
     setConfirm(true);
   };
-  // const [navOpen, setNavOpen] = useState(false);
+
   const { address, handleWalletConnection, handleWalletDisconnection } =
     useAppContext();
 
@@ -64,9 +95,15 @@ const TopNav = ({ onMobileMenuClick }) => {
           >
             {address ? "connected" : "connect wallet"}
           </button>
+
+          <button
+            className={`w3-button ${styles.theme_toggle_button}`}
+            onClick={toggleTheme}
+          >
+            <FontAwesomeIcon icon={isDarkMode ? faSun : faMoon} />
+          </button>
         </div>
       </div>
-      {/* <FontAwesomeIcon icon={faCoffee} /> */}
     </div>
   );
 };

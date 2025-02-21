@@ -1,5 +1,21 @@
+/* Global Styles */
+body.dark-theme {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+body.light-theme {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* TopNav Specific Styles */
 .top_nav {
   background-color: #181818;
+}
+
+body.light-theme .top_nav {
+  background-color: #f5f5f5;
 }
 
 .connect_button {
@@ -13,8 +29,13 @@
   flex: 2;
 }
 
+body.light-theme .connect_button {
+  color: #000000;
+}
+
 .right_objects {
   display: flex;
+  align-items: center;
 }
 
 .search_input {
@@ -25,6 +46,10 @@
   border: none;
   outline: none;
   border-radius: 10px;
+}
+
+body.light-theme .search_input {
+  background-color: #e0e0e0;
 }
 
 .search_font {
@@ -41,9 +66,25 @@
   padding: 12px;
 }
 
+body.light-theme .navname {
+  color: black;
+}
+
 .mobile_nav_button {
   border-radius: 50%;
   background-color: transparent;
+}
+
+.theme_toggle_button {
+  background-color: transparent;
+  border: none;
+  color: white;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+body.light-theme .theme_toggle_button {
+  color: black;
 }
 
 @media (max-width: 600px) {
