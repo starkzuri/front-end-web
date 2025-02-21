@@ -1,0 +1,21 @@
+.sidebar {
+  background-color: #181818;
+  color: white;
+  width: 200px;
+}
+
+.search_font {
+  padding-right: 12px !important;
+}
+
+.sidebar a {
+  padding: 12px !important;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.sidebar a:hover,
+.search_font:hover {
+  color: #0297d5;
+}

@@ -1,0 +1,89 @@
+.postcard_border {
+  border: 1px solid #181818;
+  padding: 12px;
+  border-radius: 20px;
+}
+.logo_image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0; /* Prevents resizing */
+}
+
+.form_container {
+  display: flex;
+  align-items: center; /* Align all items on the same horizontal line */
+  gap: 10px; /* Space between elements */
+  background-color: #222222;
+  padding: 12px;
+  border-radius: 20px;
+  width: 100%;
+}
+
+.form_container button {
+  border-radius: 20px;
+  background: linear-gradient(
+    90deg,
+    rgba(15, 172, 252, 1) 35%,
+    rgba(32, 127, 252, 1) 100%
+  );
+  padding: 15px;
+}
+
+.form_container img {
+  border-radius: 20px;
+  background: linear-gradient(
+    90deg,
+    rgba(15, 172, 252, 1) 35%,
+    rgba(32, 127, 252, 1) 100%
+  );
+  margin-right: 12px;
+}
+
+.form_container textarea {
+  width: 90%;
+  margin-right: 12px;
+  border-radius: 20px;
+  padding: 15px;
+  background-color: #222222;
+  border: none;
+  outline: none;
+  color: white;
+}
+
+.image_aligned {
+  margin-right: 5px;
+}
+
+.form_helpers_holder {
+  display: flex;
+}
+
+.form_helpers {
+  width: 50px;
+  background-color: #222222;
+  border-radius: 15px;
+  padding: 15px;
+  margin: 8px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.form_helpers:hover {
+  background-color: #333333;
+}
+
+@media (max-width: 600px) {
+  .postcard_border {
+    display: none;
+  }
+}
+
+.toast_message {
+  background: darkblue;
+  color: #fff;
+  font-size: 20px;
+  width: 34vw;
+  padding: 30px 20px;
+}
