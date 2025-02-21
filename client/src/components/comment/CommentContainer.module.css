@@ -1,20 +1,25 @@
 .comment_container {
   padding: 12px;
   margin-bottom: 12px;
+  border-radius: 10px;
+  background-color: #181818;
 }
 
 .comment_header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .commenter_profile_and_name {
   display: flex;
+  align-items: center;
   gap: 12px;
 }
 
 .commenter_name {
-  margin: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .commenter_profile {
@@ -23,28 +28,53 @@
   border-radius: 50%;
   background-position: center;
   background-size: cover;
+  border: 2px solid #ffffff30;
 }
 
 .duration {
   color: #ffffffb1;
+  font-size: 12px;
 }
 
-.react_button {
-  background-color: inherit;
+.comment_body {
+  padding: 10px 0;
+}
+
+.comment_footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.react_button,
+.reply_button {
+  background: none;
   color: #ccc;
   border: none;
   cursor: pointer;
+  transition: 0.2s ease;
+  padding: 5px 10px;
+  border-radius: 8px;
 }
 
-.reply_button {
-  background-color: inherit;
-  border: none;
+.react_button:hover,
+.reply_button:hover {
+  color: #2196f3;
+}
+
+.comment_actions {
+  display: flex;
+  gap: 12px;
+}
+
+.action_icon {
+  font-size: 18px;
   color: #ccc;
   cursor: pointer;
   transition: 0.2s ease;
 }
 
-.react_button:hover,
-.reply_button:hover {
+.action_icon:hover {
   color: #2196f3;
 }

@@ -1,45 +1,75 @@
 .sidebar {
   background-color: inherit;
   width: 200px;
+  height: 100vh;
+  padding: 16px;
+  box-sizing: border-box;
 }
 
-.search_font {
-  padding-right: 12px !important;
-}
-
-.sidebar a {
+.navItem {
   padding: 12px !important;
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+  border-radius: 4px;
 }
 
-.sidebar a:hover,
-.search_font:hover {
+.navItem:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Subtle hover effect */
   color: #0297d5;
+  transform: translateX(4px);
 }
 
-.sidebar button {
-  display: block;
-  margin: 12px auto;
-
-  width: 90%;
+.icon {
+  padding-right: 12px !important;
+  font-size: 18px;
+  transition: color 0.3s ease;
 }
 
-.post_button {
+.postButton {
   background: linear-gradient(
     90deg,
     rgba(15, 172, 252, 1) 35%,
     rgba(32, 127, 252, 1) 100%
   );
   border-radius: 20px;
+  color: white;
+  font-weight: 600;
+  padding: 12px;
+  width: 90%;
+  display: block;
+  margin: 12px auto;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.blog_post_button {
+.postButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(15, 172, 252, 0.4);
+}
+
+.communityButton {
   border: 1px solid rgba(32, 127, 252, 1);
   border-radius: 20px;
   font-weight: 500 !important;
   margin: 12px;
+  padding: 12px;
+  width: 90%;
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  color: rgba(32, 127, 252, 1);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.communityButton:hover {
+  background-color: rgba(32, 127, 252, 1);
+  color: white;
 }
 
 @media (max-width: 600px) {
