@@ -78,3 +78,20 @@
 .action_icon:hover {
   color: #2196f3;
 }
+
+.reply_input {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ffffff30;
+  background-color: #222;
+  color: white;
+}
+
+.replies_section {
+  margin-left: 40px;
+  margin-top: 10px;
+  border-left: 2px solid #ffffff30;
+  padding-left: 10px;
+}
