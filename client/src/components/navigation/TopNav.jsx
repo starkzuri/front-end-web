@@ -11,14 +11,18 @@ const TopNav = ({ onMobileMenuClick }) => {
   const [confirm, setConfirm] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true); // Default to dark mode
 
+  const { address, handleWalletConnection, handleWalletDisconnection } = useAppContext();
+
   // Load theme preference from localStorage on initial render
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme === "light") {
       setIsDarkMode(false);
       document.body.classList.add("light-theme");
+      document.body.classList.remove("dark-theme");
     } else {
       document.body.classList.add("dark-theme");
+      document.body.classList.remove("light-theme");
     }
   }, []);
 
@@ -40,71 +44,78 @@ const TopNav = ({ onMobileMenuClick }) => {
     localStorage.setItem("theme", newTheme ? "dark" : "light");
   };
 
-  const cancelLogout = () => {
-    setConfirm(false);
-  };
-
+  const showConfirm = () => setConfirm(true);
+  const cancelLogout = () => setConfirm(false);
+  
   const logout = () => {
     handleWalletDisconnection();
     window.location.reload();
   };
 
-  const showConfirm = () => {
-    setConfirm(true);
-  };
-
-  const { address, handleWalletConnection, handleWalletDisconnection } =
-    useAppContext();
-
   return (
-    <div className={`w3-bar ${styles.top_nav} w3-padding`}>
+    <header className={`${styles.top_nav} w3-padding`}>
+      {/* Confirmation Modal */}
       {confirm && (
         <ConfirmModal
-          message="are you sure you want to log out?"
-          heading="log out?"
+          message="Are you sure you want to log out?"
+          heading="Log out?"
           onCancelClick={cancelLogout}
           onButtonClick={logout}
         />
       )}
+      
+      {/* Mobile Navigation Button */}
       <button
-        className={`${styles.mobile_nav_button} w3-hide-large w3-hide-medium w3-bar-item`}
+        className={`${styles.mobile_nav_button} w3-hide-large w3-hide-medium`}
         onClick={onMobileMenuClick}
+        aria-label="Open navigation menu"
       >
-        <FontAwesomeIcon className="w3-text-white" icon={faNavicon} />
+        <FontAwesomeIcon 
+          className={isDarkMode ? "w3-text-white" : ""} 
+          icon={faNavicon} 
+        />
       </button>
-      <span>
-        <img src={Logo} className={styles.logo} />
-      </span>
+      
+      {/* Logo */}
+      <div className={styles.logo_container}>
+        <img src={Logo} alt="Logo" className={styles.logo} />
+      </div>
 
-      <div className="w3-right">
+      {/* Right Side Elements */}
+      <div className={styles.right_section}>
         <div className={styles.right_objects}>
-          <div className={styles.search_input}>
+          {/* Search Bar */}
+          <div className={styles.search_input_container}>
             <FontAwesomeIcon
-              className={`${styles.search_font} w3-text-white w3-padding`}
+              className={`${styles.search_font} ${isDarkMode ? "w3-text-white" : ""}`}
               icon={faSearch}
             />
             <input
-              className={`w3-input ${styles.search_input} w3-text-white`}
-              placeholder="search"
+              className={`${styles.search_input} ${isDarkMode ? "w3-text-white" : ""}`}
+              placeholder="Search"
+              aria-label="Search"
             />
           </div>
 
+          {/* Connect Wallet Button */}
           <button
-            className={`w3-button ${styles.connect_button}`}
+            className={styles.connect_button}
             onClick={address ? showConfirm : handleWalletConnection}
           >
-            {address ? "connected" : "connect wallet"}
+            {address ? "Connected" : "Connect Wallet"}
           </button>
 
+          {/* Theme Toggle Button */}
           <button
-            className={`w3-button ${styles.theme_toggle_button}`}
+            className={styles.theme_toggle_button}
             onClick={toggleTheme}
+            aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
           >
             <FontAwesomeIcon icon={isDarkMode ? faSun : faMoon} />
           </button>
         </div>
       </div>
-    </div>
+    </header>
   );
 };
 

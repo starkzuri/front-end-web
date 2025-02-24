@@ -1,23 +1,93 @@
-/* Global Styles */
-body.dark-theme {
-  background-color: #121212;
-  color: #ffffff;
-}
-
-body.light-theme {
-  background-color: #ffffff;
-  color: #000000;
-}
-
 /* TopNav Specific Styles */
 .top_nav {
   background-color: #181818;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: background-color 0.3s ease;
 }
 
 body.light-theme .top_nav {
   background-color: #f5f5f5;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
+/* Logo styles */
+.logo_container {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 150px;
+  height: auto;
+  transition: width 0.3s ease;
+}
+
+/* Right section styles */
+.right_section {
+  display: flex;
+  align-items: center;
+}
+
+.right_objects {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Search input styles */
+.search_input_container {
+  display: flex;
+  align-items: center;
+  background-color: #0f0f0f;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  width: 240px;
+  transition: all 0.3s ease;
+}
+
+.search_input_container:focus-within {
+  box-shadow: 0 0 0 2px rgba(15, 172, 252, 0.5);
+}
+
+body.light-theme .search_input_container {
+  background-color: #e0e0e0;
+}
+
+.search_font {
+  color: #888;
+  margin-right: 0.5rem;
+}
+
+.search_input {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  width: 100%;
+  font-size: 0.95rem;
+}
+
+.search_input::placeholder {
+  color: #888;
+  opacity: 1;
+}
+
+body.light-theme .search_input {
+  color: #333;
+}
+
+body.light-theme .search_input::placeholder {
+  color: #666;
+}
+
+/* Connect button styles */
 .connect_button {
   background: linear-gradient(
     90deg,
@@ -26,73 +96,107 @@ body.light-theme .top_nav {
   );
   border-radius: 10px;
   color: white;
-  flex: 2;
+  font-weight: 500;
+  padding: 0.5rem 1.25rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.connect_button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(15, 172, 252, 0.3);
+}
+
+.connect_button:active {
+  transform: translateY(0);
 }
 
 body.light-theme .connect_button {
-  color: #000000;
-}
-
-.right_objects {
-  display: flex;
-  align-items: center;
-}
-
-.search_input {
-  display: flex;
-  background-color: #0f0f0f;
-  margin-right: 30px;
-  flex: 2;
-  border: none;
-  outline: none;
-  border-radius: 10px;
-}
-
-body.light-theme .search_input {
-  background-color: #e0e0e0;
-}
-
-.search_font {
-  background-color: transparent;
-}
-
-.logo {
-  width: 150px;
-}
-
-.navname {
-  font-weight: 500;
   color: white;
-  padding: 12px;
 }
 
-body.light-theme .navname {
-  color: black;
-}
-
-.mobile_nav_button {
-  border-radius: 50%;
-  background-color: transparent;
-}
-
+/* Theme toggle button styles */
 .theme_toggle_button {
   background-color: transparent;
   border: none;
   color: white;
-  margin-left: 10px;
   cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.theme_toggle_button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 body.light-theme .theme_toggle_button {
-  color: black;
+  color: #333;
+}
+
+body.light-theme .theme_toggle_button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Mobile navigation button */
+.mobile_nav_button {
+  border-radius: 50%;
+  background-color: transparent;
+  border: none;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.mobile_nav_button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+body.light-theme .mobile_nav_button {
+  color: #333;
+}
+
+body.light-theme .mobile_nav_button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .search_input_container {
+    display: none;
+  }
+  
+  .right_objects {
+    gap: 0.5rem;
+  }
+  
+  .logo {
+    width: 120px;
+  }
+  
+  .connect_button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
 }
 
 @media (max-width: 600px) {
-  .search_input {
-    display: none;
-  }
-
   .logo {
     width: 90px;
+  }
+  
+  .top_nav {
+    padding: 0.5rem 1rem;
   }
 }

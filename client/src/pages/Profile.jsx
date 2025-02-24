@@ -41,6 +41,8 @@ const Profile = () => {
 
   const [coverPhoto, setCoverPhoto] = useState("");
   const [profilePhoto, setProfilePhoto] = useState("");
+  const [previewProfile, setPreviewProfile] = useState("");
+  const [previewCover, setPreviewCover] = useState("");
 
   const profileImage = useRef();
   const zuriPoints = useRef();
@@ -83,6 +85,14 @@ const Profile = () => {
         let val = contract.callData.parse("view_user", res?.result ?? res);
         console.log(val);
         setUser(val);
+        // Pre-populate form fields with existing user data
+        if (val) {
+          setName(bigintToShortStr(val.name));
+          setUsername(bigintToShortStr(val.username));
+          setAbout(val.about);
+          setPreviewProfile(val.profile_pic);
+          setPreviewCover(val.cover_photo);
+        }
       })
       .catch((err) => {
         console.error("Error: ", err);
@@ -122,29 +132,38 @@ const Profile = () => {
 
   async function onChangeFile(e) {
     var file = e.target.files[0];
-
-    const response = await uploadToIPFS(file);
-
-    console.log(response);
-
-    setProfilePhoto(response);
+    
+    if (file) {
+      // Create preview URL for immediate feedback
+      const previewUrl = URL.createObjectURL(file);
+      setPreviewProfile(previewUrl);
+      
+      const response = await uploadToIPFS(file);
+      console.log(response);
+      setProfilePhoto(response);
+    }
   }
 
   const handleCoverChange = async (e) => {
     var file = e.target.files[0];
-
-    const response = await uploadToIPFS(file);
-
-    console.log(response);
-
-    setCoverPhoto(response);
+    
+    if (file) {
+      // Create preview URL for immediate feedback
+      const previewUrl = URL.createObjectURL(file);
+      setPreviewCover(previewUrl);
+      
+      const response = await uploadToIPFS(file);
+      console.log(response);
+      setCoverPhoto(response);
+    }
   };
 
   const makeInteraction = () => {
-    // console.log(name);
-    // console.log(username);
-    // console.log(profile);
-    // console.log(cover);
+    if (!name || !username) {
+      alert("Name and username are required");
+      return;
+    }
+    
     const myCall = contract.populate("add_user", [
       name,
       username,
@@ -156,6 +175,8 @@ const Profile = () => {
     contract["add_user"](myCall.calldata)
       .then((res) => {
         console.info("Successful Response:", res);
+        setModalOpen(false);
+        view_user(); // Refresh user data
       })
       .catch((err) => {
         console.error("Error: ", err);
@@ -164,9 +185,6 @@ const Profile = () => {
         setLoading(false);
       });
   };
-
-  // let readableNo = BigNumber("1952805748").toString();
-  // console.log(readableNo);
 
   const handleAboutChange = (e) => {
     setAbout(e.target.value);
@@ -183,6 +201,7 @@ const Profile = () => {
     setNavOpen(!navOpen);
     console.log(navOpen);
   };
+  
   return (
     <div>
       <TopNav onMobileMenuClick={handleMobileMenuClick} />
@@ -193,68 +212,140 @@ const Profile = () => {
       <Main>
         {sellZuriModalOpen && (
           <ModalContainer closeModal={() => setSellZuriModalOpen(false)}>
-            <h3>Sell zuri Points</h3>
-            <label>Enter Amount</label>
-            <input
-              className="w3-input w3-text-white w3-border w3-transparent w3-round"
-              ref={zuriPoints}
-            />
-            <br />
-            <button
-              className="w3-button w3-border w3-round"
-              onClick={handleSellZuriPoints}
-            >
-              Sell
-            </button>
+            <div className={styles.modalHeader}>
+              <h3>Sell Zuri Points</h3>
+            </div>
+            <div className={styles.modalBody}>
+              <div className={styles.formGroup}>
+                <label>Enter Amount</label>
+                <input
+                  className={`w3-input ${styles.input}`}
+                  ref={zuriPoints}
+                  placeholder="0.00"
+                  type="number"
+                />
+              </div>
+              <div className={styles.formActions}>
+                <button
+                  className={`w3-button ${styles.cancelBtn}`}
+                  onClick={() => setSellZuriModalOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className={`w3-button ${styles.primaryBtn}`}
+                  onClick={handleSellZuriPoints}
+                  disabled={loading}
+                >
+                  {loading ? "Processing..." : "Sell"}
+                </button>
+              </div>
+            </div>
           </ModalContainer>
         )}
+        
         {modalOpen && (
           <ModalContainer closeModal={() => setModalOpen(false)}>
-            <h3>Edit profile</h3>
-            <hr />
-            <label>Name</label>
-            <input
-              onChange={handleNameChange}
-              className={`w3-input w3-border w3-round ${styles.input}`}
-              type="text"
-            />
-
-            <label>userName</label>
-            <input
-              onChange={handleuserNameChange}
-              className={`w3-input w3-border w3-round ${styles.input}`}
-              type="text"
-            />
-            <label>about</label>
-            <input
-              onChange={handleAboutChange}
-              className={`w3-input w3-border w3-round ${styles.input}`}
-              type="text"
-            />
-            <label>profile pic</label>
-            <input
-              className={`w3-input w3-border w3-round ${styles.input}`}
-              type="file"
-              onChange={onChangeFile}
-              ref={profileImage}
-              accept="image/*"
-            />
-
-            <label>Cover photo</label>
-            <input
-              className={`w3-input w3-border w3-round ${styles.input}`}
-              type="file"
-              onChange={handleCoverChange}
-              ref={coverImage}
-            />
-            <button
-              onClick={makeInteraction}
-              className={`w3-btn w3-block w3-round w3-blue`}
-            >
-              update
-            </button>
+            <div className={styles.modalHeader}>
+              <h3>Edit Profile</h3>
+            </div>
+            
+            <div className={styles.modalBody}>
+              <div className={styles.imagePreviewSection}>
+                <div className={styles.coverPreview} style={{ backgroundImage: `url(${previewCover})` }}>
+                  <label htmlFor="coverUpload" className={styles.uploadLabel}>
+                    <i className="fa fa-camera"></i>
+                    <span>Update Cover</span>
+                  </label>
+                  <input
+                    id="coverUpload"
+                    type="file"
+                    onChange={handleCoverChange}
+                    ref={coverImage}
+                    accept="image/*"
+                    className={styles.hiddenInput}
+                  />
+                </div>
+                
+                <div className={styles.profilePreviewWrapper}>
+                  <div 
+                    className={styles.profilePreview} 
+                    style={{ backgroundImage: `url(${previewProfile})` }}
+                  >
+                    <label htmlFor="profileUpload" className={styles.uploadLabel}>
+                      <i className="fa fa-camera"></i>
+                    </label>
+                    <input
+                      id="profileUpload"
+                      type="file"
+                      onChange={onChangeFile}
+                      ref={profileImage}
+                      accept="image/*"
+                      className={styles.hiddenInput}
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              <div className={styles.formContainer}>
+                <div className={styles.formGroup}>
+                  <label>Name</label>
+                  <input
+                    value={name}
+                    onChange={handleNameChange}
+                    className={`w3-input ${styles.input}`}
+                    type="text"
+                    placeholder="Your full name"
+                    required
+                  />
+                </div>
+                
+                <div className={styles.formGroup}>
+                  <label>Username</label>
+                  <div className={styles.usernameInput}>
+                    <span className={styles.atSymbol}>@</span>
+                    <input
+                      value={username}
+                      onChange={handleuserNameChange}
+                      className={`w3-input ${styles.input}`}
+                      type="text"
+                      placeholder="username"
+                      required
+                    />
+                  </div>
+                </div>
+                
+                <div className={styles.formGroup}>
+                  <label>About</label>
+                  <textarea
+                    value={about}
+                    onChange={handleAboutChange}
+                    className={`w3-input ${styles.textarea}`}
+                    placeholder="Tell us about yourself"
+                    rows="3"
+                  ></textarea>
+                </div>
+                
+                <div className={styles.formActions}>
+                  <button
+                    onClick={() => setModalOpen(false)}
+                    className={`w3-button ${styles.cancelBtn}`}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={makeInteraction}
+                    className={`w3-button ${styles.primaryBtn}`}
+                    disabled={loading}
+                  >
+                    {loading ? "Updating..." : "Save Changes"}
+                  </button>
+                </div>
+              </div>
+            </div>
           </ModalContainer>
         )}
+        
         <div className="w3-row-padding w3-stretch">
           <div className="w3-col l8">
             {address ? (
