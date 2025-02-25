@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import styles from "./NotificationsCard.module.css";
-import profile_5 from "../../assets/profile5.jpg";
 import { useAppContext } from "../../providers/AppProvider";
 import {
   bigintToShortStr,
@@ -126,7 +125,10 @@ const NotificationsCard = () => {
           console.log(notification_type);
 
           return (
-            <div key={notification.id || notification.timestamp} className={styles.notification_content}>
+            <div
+              key={notification.id || notification.timestamp}
+              className={styles.notification_content}
+            >
               <div className={styles.profile}>
                 <div className={styles.online}></div>
                 <div

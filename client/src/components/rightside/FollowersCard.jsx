@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./FollowersCard.module.css";
-import profile1 from "../../assets/profile1.jpg";
-import profile2 from "../../assets/profile2.jpg";
-import profile3 from "../../assets/profile3.jpg";
-import profile4 from "../../assets/profile5.jpg";
+
 import FollowersLIst from "./FollowersLIst";
 import { useAppContext } from "../../providers/AppProvider";
 import { bigintToLongAddress, bigintToShortStr } from "../../utils/AppUtils";

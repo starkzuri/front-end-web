@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "./FeaturedCommunityCard.module.css";
-import virtual_reality_image from "../../assets/virtual_reality.jpg";
-import stark from "../../assets/ST4.png";
-import computer_science from "../../assets/computer_science.jpg";
-import profile_4 from "../../assets/profile3.jpg";
+
 import { useAppContext } from "../../providers/AppProvider";
 import { bigintToShortStr } from "../../utils/AppUtils";
 import { ClipLoader } from "react-spinners";

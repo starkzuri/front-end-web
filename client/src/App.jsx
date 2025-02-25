@@ -5,7 +5,7 @@ import "w3-css/w3.css";
 import Home from "./pages/Home";
 import Marketplace from "./pages/Marketplace";
 import Explore from "./pages/Explore";
-import Messages from "./pages/Messages";
+// import Messages from "./pages/Messages";
 import More from "./pages/More";
 import Notifications from "./pages/Notifications";
 import Profile from "./pages/Profile";
@@ -32,7 +32,7 @@ function App() {
             <Route path="/marketplace" element={<Marketplace />} />
             <Route path="/communities/:id" element={<Communities />} />
             <Route path="/explore" element={<Explore />} />
-            <Route path="/messages" element={<Messages />} />
+            {/* <Route path="/messages" element={<Messages />} /> */}
             <Route path="/more" element={<More />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/profile" element={<Profile />} />

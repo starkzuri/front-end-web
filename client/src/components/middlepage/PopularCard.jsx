@@ -1,10 +1,5 @@
 import React from "react";
-import styles from "./PopularCard.module.css";
-import background from "../../assets/explore_image_2.jpg";
-import profile_5 from "../../assets/profile5.jpg";
-import crystals from "../../assets/crystals.jpg";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
+
 const PopularCard = () => {
   return (
     <div className={`w3-row-padding w3-stretch`}>

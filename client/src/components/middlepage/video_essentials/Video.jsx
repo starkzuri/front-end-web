@@ -18,8 +18,6 @@ import {
   faArrowsRotate,
   faCoins,
 } from "@fortawesome/free-solid-svg-icons";
-import profile5 from "../../../assets/profile5.jpg";
-import video2 from "../../../assets/media2.mp4";
 import { Link } from "react-router-dom";
 import { useAppContext } from "../../../providers/AppProvider";
 import { bigintToLongAddress, bigintToShortStr } from "../../../utils/AppUtils";
@@ -352,7 +350,7 @@ const Video = ({
                     <CommentContainer
                       key={id}
                       userAddress={bigintToLongAddress(comment.caller)}
-                      profilePic={profile5}
+                      profilePic={""}
                       content={comment.content}
                     />
                   );

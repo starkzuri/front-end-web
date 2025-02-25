@@ -9,7 +9,6 @@ import {
 
 import styles from "./ProfileCardMiddle.module.css";
 import profileGradient from "../../assets/profile_gradient.jpg";
-import profile1 from "../../assets/profile1.jpg";
 
 const ProfileCardMiddle = () => {
   return (

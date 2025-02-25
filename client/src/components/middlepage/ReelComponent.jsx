@@ -15,10 +15,7 @@ import {
   faMusic,
   faHeart,
 } from "@fortawesome/free-solid-svg-icons";
-import profile5 from "../../assets/profile5.jpg";
-import video2 from "../../assets/media2.mp4";
 import Video from "./video_essentials/Video";
-import funnyjude from "../../assets/funnyjude.mp4";
 
 import { useAppContext } from "../../providers/AppProvider";
 import { bigintToLongAddress } from "../../utils/AppUtils";
